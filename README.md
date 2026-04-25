@@ -1,20 +1,54 @@
 # Executive Operations Dashboard Case Study
-Leadership-ready dashboard case study for KPI design, operational reporting, and executive decision support
 
-## Overview
-This case study demonstrates how operational data from multiple sources can be transformed into a leadership-ready dashboard that improves visibility, standardizes KPI reporting, and supports faster decision-making
+<p align="left">
+  <img src="https://img.shields.io/badge/Power%20BI-Executive%20Reporting-blue" />
+  <img src="https://img.shields.io/badge/DAX-KPI%20Modeling-blue" />
+  <img src="https://img.shields.io/badge/Star%20Schema-Semantic%20Model-blue" />
+  <img src="https://img.shields.io/badge/Decision%20Support-Leadership-blue" />
+</p>
+
+A leadership-ready operations dashboard that consolidates fragmented operational data into a single, KPI-driven decision-support tool — replacing a manual, multi-source reporting cycle with one trusted view.
+
+---
+
+> [!IMPORTANT]
+> This case study uses generalized operational examples — incident tracking, work order activity, zone and priority breakdowns — without exposing system names, table structures, or confidential details. The dashboard mockup, KPI definitions, DAX patterns, and architecture all reflect a real reporting solution.
+
+![Dashboard mockup](images/01-dashboard-mockup.png)
+
+---
+
+## Business Questions This Dashboard Answers
+
+A leadership audience walks up to this report with a small set of recurring questions. The dashboard is designed so each question is answerable in seconds, not minutes.
+
+| Question | Where it lives on the dashboard |
+|---|---|
+| **What is our current operational backlog and where is it concentrated?** | KPI card *Backlog Volume* + *Backlog by Service Zone* bar chart |
+| **Are we hitting target resolution times?** | KPI card *Avg Resolution (days)* with SLA comparison |
+| **How is weekly throughput trending — improving or slipping?** | *Weekly Completed Trend* line chart (closed vs opened) |
+| **Which service zones have the highest open work right now?** | Zone breakdown, sorted descending |
+| **Which priority bands carry the largest unresolved workload?** | Priority distribution slicer + filtered KPI flow |
+| **Where should we reallocate resources next?** | Combined view of zones, backlog, and weekly throughput |
+| **What share of work has been completed this period?** | KPI card *% Completed* with delta vs prior period |
+
+The dashboard surfaces the answers; leadership owns the decisions.
+
+---
 
 ## Business Problem
 
-Before the dashboard was developed, operational reporting was fragmented, manual, and slow. Critical data lived across multiple systems, files, and reporting processes, making it difficult for leadership to get a consistent and timely view of operational performance.
+Before the dashboard existed, operational reporting was fragmented, manual, and slow.
 
-Common challenges included:
-
-- Reporting was heavily manual and time-consuming
-- Data lived in multiple places with no single source of truth
-- Leadership lacked one clear, consolidated view
+- Reporting required heavy manual consolidation each cycle
+- Data lived across multiple systems, files, and reporting processes
+- Leadership had no single consolidated view
 - Decision-making was slowed by inconsistent updates and reporting lag
-- Operational trends were harder to identify quickly
+- Operational trends were difficult to identify quickly
+
+![Before vs After](images/04-before-after.png)
+
+---
 
 ## Project Goals
 
@@ -27,60 +61,60 @@ The dashboard was designed to:
 - Support prioritization and resource allocation decisions
 - Create a scalable reporting structure for ongoing operational monitoring
 
+---
+
 ## Dashboard Scope
 
-The dashboard provides visibility into key aspects of operational activity, including:
+The dashboard provides visibility into key aspects of operational activity:
 
-- Affected zones or service areas
+- Affected zones and service areas
 - Response progress across locations
 - Backlog and work status tracking
-- Operational activity by week or reporting period
-- Resource allocation and workload distribution metrics
-- Trends in completion and response performance
+- Weekly operational activity and trend
+- Resource allocation and workload distribution
+- Completion and response performance
 
-## Source Data Overview
-
-The reporting solution was built using multiple operational and reference data sources at a safe, general level, including:
-
-- Incident tracking data
-- Operational work order data
-- Location and zone reference tables
-- Status and priority reference tables
-- Manual reporting logs used for reconciliation or supplemental updates
-
-To protect sensitive information, specific system names, table names, and confidential source structures are not included in this summary.
+---
 
 ## KPI Definitions
 
-The dashboard included a set of standardized KPIs to support consistent reporting. Example KPIs included:
+The dashboard standardizes a small set of KPIs so every team interprets them the same way.
 
-- **Total Incidents Tracked** – Count of all incidents within the reporting scope
-- **Open vs. Closed Work Items** – Comparison of active and completed operational items
-- **Average Resolution Time** – Average time required to close completed work items
-- **Backlog Volume** – Total number of items still pending action
-- **Percent Completed by Zone** – Completion rate across geographic or service areas
-- **Active Response Locations** – Count of locations with ongoing response activity
-- **Weekly Progress Trend** – Change in completed activity over time
-- **Priority Workload Distribution** – Volume of work segmented by urgency or priority
+| KPI | Definition | Where it appears |
+|---|---|---|
+| **Total Incidents Tracked** | Count of all incidents in scope | Top KPI card |
+| **Open Work Items** | Active operational items, not yet closed | Top KPI card |
+| **Average Resolution Time** | Mean days between open and close on completed items | Top KPI card with SLA comparison |
+| **Backlog Volume** | Total items still pending action | Top KPI card |
+| **% Completed** | Closed work items ÷ total tracked | Top KPI card with delta |
+| **Active Response Locations** | Locations with ongoing response activity | Top KPI card |
+| **Weekly Progress Trend** | Closed work items per week | Trend chart |
+| **Priority Workload Distribution** | Volume by urgency / priority band | Slicer + breakdown |
+
+![KPI card detail](images/02-kpi-card-detail.png)
+
+---
 
 ## Dashboard Design Approach
 
-The dashboard was designed primarily for leadership and executive stakeholders, so the reporting experience emphasized clarity, speed, and usability.
+The dashboard is designed primarily for executive and leadership stakeholders, so the experience emphasizes clarity, speed, and usability.
 
-Design principles included:
+Design principles:
 
-- Quick-scan visibility for high-level decision-making
-- KPI cards for immediate status recognition
-- Trend visuals to show movement over time
-- Geographic or tabular detail for operational drilldown
-- A layout focused on clarity over clutter
-- Consistent labeling and business-friendly metric definitions
+- **Quick-scan visibility** for high-level decision-making
+- **KPI cards** for immediate status recognition
+- **Trend visuals** to show movement over time
+- **Geographic / tabular drilldown** for operational depth when needed
+- **Layout focused on clarity** over clutter
+- **Consistent labeling** and business-friendly metric names
 
-The goal was to make the dashboard easy to interpret in a few seconds while still supporting deeper analysis when needed.
+The goal is a dashboard interpretable in a few seconds while still supporting deeper analysis on request.
+
+---
 
 ## Sample DAX Logic
 
-Below are sample DAX measures illustrating the type of logic used in the reporting model:
+A handful of representative measures from the reporting model.
 
 ```DAX
 Total Incidents =
@@ -100,19 +134,12 @@ CALCULATE(
 
 Average Resolution Time (Days) =
 AVERAGEX(
-    FILTER(
-        'WorkItems',
-        NOT(ISBLANK('WorkItems'[ClosedDate]))
-    ),
+    FILTER('WorkItems', NOT(ISBLANK('WorkItems'[ClosedDate]))),
     DATEDIFF('WorkItems'[CreatedDate], 'WorkItems'[ClosedDate], DAY)
 )
 
 Percent Completed =
-DIVIDE(
-    [Closed Work Items],
-    [Total Incidents],
-    0
-)
+DIVIDE([Closed Work Items], [Total Incidents], 0)
 
 Weekly Completed Trend =
 CALCULATE(
@@ -122,42 +149,23 @@ CALCULATE(
 ```
 
 ---
-## Before vs. After Process
 
-This project created business value by replacing a fragmented reporting process with a centralized, repeatable dashboard experience.
+## Architecture
 
-### Before
+```
+Source data  →  Power Query (ETL + cleansing)  →  Semantic model (DAX, KPIs)  →  Power BI dashboard
+```
 
-- Data was compiled manually from multiple files and email updates.
-- Reporting required repeated consolidation and validation effort.
-- Reporting cadence was inconsistent across teams and periods.
-- Leadership visibility was delayed and dependent on manual preparation.
-- KPI definitions were less standardized, increasing interpretation risk.
+![Architecture](images/03-architecture.png)
 
-### After
+### Workflow
 
-- A centralized dashboard provided one consistent view of operations.
-- KPI definitions were standardized and easier to trust.
-- Reporting cycles became faster and more repeatable.
-- Leadership gained improved visibility into progress, backlog, and priorities.
-- Teams were better positioned to support prioritization and resource decisions.
+1. Source data collected from multiple operational inputs
+2. Standardized through transformation and modeling steps
+3. A Power BI semantic model defines relationships, business logic, and KPIs
+4. The dashboard surfaces leadership-ready metrics + operational detail in a single experience
 
----
-
-## Architecture Overview
-
-At a high level, the solution followed a straightforward analytics flow:
-
-**Source data → transformation and modeling → Power BI semantic model → dashboard/report**
-
-### Workflow Summary
-
-1. Source data was collected from multiple operational inputs.
-2. Data was transformed and standardized through preparation and modeling steps.
-3. A Power BI semantic model was developed to define relationships, business logic, and KPIs.
-4. The final dashboard surfaced leadership-ready metrics and operational detail in a single report experience.
-
-This architecture supported both reporting consistency and future extensibility as business needs evolved.
+The architecture supports both reporting consistency and future extensibility as operational data sources evolve.
 
 ---
 
@@ -165,17 +173,47 @@ This architecture supported both reporting consistency and future extensibility 
 
 The dashboard delivered measurable value by improving the speed, consistency, and usefulness of operational reporting.
 
-Safe outcomes that can be communicated publicly include:
-
 - Significantly reduced manual reporting effort
-- Improved reporting speed through a centralized dashboard workflow
+- Improved reporting speed through a centralized workflow
 - Enabled near-real-time operational visibility for leadership
-- Increased consistency in KPI definitions and reporting interpretation
-- Improved confidence and speed in leadership reporting
+- Increased KPI consistency and reporting interpretation
+- Improved confidence in leadership reporting
 - Supported faster prioritization and more informed resource decisions
+
+---
+
+## Tech Stack
+
+- **Power BI Desktop** — semantic model + report
+- **DAX** — KPI logic and time-intelligence patterns
+- **Power Query (M)** — ETL and source standardization
+- **Star schema** — fact + dimension modeling for performance and clarity
+
+---
+
+## Repository Layout
+
+```
+executive-operations-dashboard-case-study/
+├── README.md
+├── images/
+│   ├── 01-dashboard-mockup.png    Full dashboard layout
+│   ├── 02-kpi-card-detail.png     KPI card design close-up
+│   ├── 03-architecture.png        Source-to-dashboard flow
+│   └── 04-before-after.png        Process improvement panel
+└── scripts/
+    └── generate_visuals.py        Regenerates the four images
+```
 
 ---
 
 ## Key Takeaway
 
-This project shows how a well-designed Power BI dashboard can do more than visualize data. By consolidating fragmented operational inputs, standardizing KPI definitions, and presenting information in a leadership-friendly format, the solution helped transform reporting from a manual process into a strategic decision-support tool.
+A well-designed Power BI dashboard does more than visualize data. By consolidating fragmented operational inputs, standardizing KPI definitions, and presenting information in a leadership-friendly format, the solution helped transform reporting from a manual process into a strategic decision-support tool.
+
+---
+
+## Connect
+
+- 🔗 [LinkedIn](https://www.linkedin.com/in/jas0n-ch0i/)
+- 📧 [Email me](mailto:jchoi815@gmail.com)
